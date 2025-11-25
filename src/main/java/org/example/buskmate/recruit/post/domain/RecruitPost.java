@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.example.buskmate.band.domain.Band;
+
 import java.time.LocalDateTime;
 /**
  * 밴드 모집 게시글 엔티티를 나타냅니다.
@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity@Table(name = "recruit_posts",
-        indexes = {@Index(name = "idx_recruitpost_post_id", columnList = "post_id", unique = true)})
+        indexes = {@Index(name = "idx_recruitpost_post_id", columnList = "postId", unique = true)})
 public class RecruitPost {
 
     @Id
@@ -42,9 +42,8 @@ public class RecruitPost {
     @Column(name="post_id", nullable = false, unique=true)
     private String postId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "band_id", nullable = false)
-    private Band band;
+    @Column(name="band_id", nullable = false)
+    private String bandId;
 
     @Column(nullable = false)
     private String title;
@@ -60,9 +59,9 @@ public class RecruitPost {
     private LocalDateTime createdAt;
 
     @Builder
-    private RecruitPost(String postId, Band band, String title, String content) {
+    private RecruitPost(String postId, String bandId, String title, String content) {
         this.postId = postId;
-        this.band = band;
+        this.bandId = bandId;
         this.title = title;
         this.content = content;
         this.status = RecruitPostStatus.OPEN;
