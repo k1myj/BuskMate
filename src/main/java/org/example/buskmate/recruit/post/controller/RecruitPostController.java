@@ -3,12 +3,10 @@ package org.example.buskmate.recruit.post.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.buskmate.recruit.post.dto.CreateRecruitPostRequestDto;
 import org.example.buskmate.recruit.post.dto.CreateRecruitPostResponseDto;
+import org.example.buskmate.recruit.post.dto.RecruitPostDetailResponseDto;
 import org.example.buskmate.recruit.post.service.RecruitPostService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +18,11 @@ public class RecruitPostController {
         String currentUserId = "USER";
         return ResponseEntity.ok(
                 recruitPostService.create(req, currentUserId));
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<RecruitPostDetailResponseDto> getDetail(@PathVariable String postId){
+        return ResponseEntity.ok(
+                recruitPostService.getDetail(postId));
     }
 }

@@ -8,6 +8,7 @@ import org.example.buskmate.band.repository.BandRepository;
 import org.example.buskmate.recruit.post.domain.RecruitPost;
 import org.example.buskmate.recruit.post.dto.CreateRecruitPostRequestDto;
 import org.example.buskmate.recruit.post.dto.CreateRecruitPostResponseDto;
+import org.example.buskmate.recruit.post.dto.RecruitPostDetailResponseDto;
 import org.example.buskmate.recruit.post.repository.RecruitPostRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -50,4 +51,19 @@ public class RecruitPostServiceImpl implements RecruitPostService {
         );
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public RecruitPostDetailResponseDto getDetail(String postId){
+        RecruitPost post = recruitPostRepository.findByPostId(postId)
+                .orElseThrow(() -> new IllegalArgumentException("모집 글을 찾을 수 없습니다."));
+
+        return RecruitPostDetailResponseDto.builder()
+                .postId(post.getPostId())
+                .bandId(post.getBand().getBandId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .status(post.getStatus())
+                .createdAt(post.getCreatedAt())
+                .build();
+    }
 }
