@@ -49,6 +49,14 @@
             this.summary = summary;
         }
 
+        public static MapMarker of(
+                MarkerType markerType,
+                MapLocation location,
+                String title,
+                String summary
+        ) {
+            return new MapMarker(markerType, location, title, summary);
+        }
 
 
         @PrePersist
