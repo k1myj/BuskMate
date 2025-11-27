@@ -1,10 +1,7 @@
 package org.example.buskmate.recruit.post.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.buskmate.recruit.post.dto.CreateRecruitPostRequestDto;
-import org.example.buskmate.recruit.post.dto.CreateRecruitPostResponseDto;
-import org.example.buskmate.recruit.post.dto.RecruitPostDetailResponseDto;
-import org.example.buskmate.recruit.post.dto.RecruitPostListDto;
+import org.example.buskmate.recruit.post.dto.*;
 import org.example.buskmate.recruit.post.service.RecruitPostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,5 +30,11 @@ public class RecruitPostController {
     public ResponseEntity<List<RecruitPostListDto>> getActiveList(){
         return ResponseEntity.ok(
                 recruitPostService.getActiveList());
+    }
+
+    @PatchMapping("/{postId}")
+    public ResponseEntity<RecruitPostDetailResponseDto> updateRecruitPost(@PathVariable String postId, @RequestBody UpdateRecruitPostRequestDto req,@AuthenticationPrincipal CustomUser user){
+        return ResponseEntity.ok(
+                recruitPostService.update(postId, req, user.getUserId()));
     }
 }

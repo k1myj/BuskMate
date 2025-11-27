@@ -6,10 +6,7 @@ import org.example.buskmate.band.domain.Band;
 import org.example.buskmate.band.repository.BandRepository;
 import org.example.buskmate.recruit.post.domain.RecruitPost;
 import org.example.buskmate.recruit.post.domain.RecruitPostStatus;
-import org.example.buskmate.recruit.post.dto.CreateRecruitPostRequestDto;
-import org.example.buskmate.recruit.post.dto.CreateRecruitPostResponseDto;
-import org.example.buskmate.recruit.post.dto.RecruitPostDetailResponseDto;
-import org.example.buskmate.recruit.post.dto.RecruitPostListDto;
+import org.example.buskmate.recruit.post.dto.*;
 import org.example.buskmate.recruit.post.repository.RecruitPostRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -66,5 +63,33 @@ public class RecruitPostServiceImpl implements RecruitPostService {
     @Override
     public List<RecruitPostListDto> getActiveList(){
         return recruitPostRepository.findAllByStatus(RecruitPostStatus.OPEN);
+    }
+
+    @Transactional
+    @Override
+    public RecruitPostDetailResponseDto update(String postId, UpdateRecruitPostRequestDto req, String currentUserId){
+        RecruitPost post= recruitPostRepository.findByPostId(postId)
+                .orElseThrow(() -> new IllegalArgumentException("모집글을 찾을 수 없습니다"));
+
+
+        if (post.getStatus() != RecruitPostStatus.OPEN) {
+            throw new IllegalStateException("모집 중인 글만 수정할 수 있습니다.");
+        }
+
+        Band band= post.getBand();
+        if (!band.getLeaderId().equals(currentUserId)) {
+            throw new AccessDeniedException("밴드장만 모집 글을 수정할 수 있습니다.");
+        }
+
+        post.updateInfo(req.getTitle(), req.getContent());
+        return RecruitPostDetailResponseDto.builder()
+                .postId(post.getPostId())
+                .bandId(post.getBand().getBandId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .status(post.getStatus())
+                .createdAt(post.getCreatedAt())
+                .build();
+
     }
 }
