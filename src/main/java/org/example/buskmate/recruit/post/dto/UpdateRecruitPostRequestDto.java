@@ -7,16 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class CreateRecruitPostRequestDto {
-    @NotBlank
-    private String bandId;
-
+public class UpdateRecruitPostRequestDto {
     @NotBlank
     @Size(max = 50)
     private String title;
-
     @NotBlank
     @Size(max = 2000)
     private String content;
-
 }
