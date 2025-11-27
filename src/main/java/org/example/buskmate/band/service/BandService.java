@@ -12,4 +12,6 @@ public interface BandService {
     List<BandListItemResponse> getAllBands();
 
     BandDetailResponse updateBand(String bandId, UpdateBandRequest req);
+
+    void deactivate(String bandId);
 }

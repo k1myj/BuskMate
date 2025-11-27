@@ -95,4 +95,17 @@ public class BandServiceImpl implements BandService {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public void deactivate(String bandId) {
+
+        Band band = bandRepository.findByBandIdAndStatusActive(bandId);
+
+        if (band == null) {
+            throw new IllegalArgumentException("해당 밴드가 존재하지 않습니다: " + bandId);
+        }
+
+        band.deactivate();
+    }
+
 }

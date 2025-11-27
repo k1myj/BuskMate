@@ -42,4 +42,10 @@ public class BandController {
         BandDetailResponse response = bandService.updateBand(bandId, request);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{bandId}")
+    public ResponseEntity<Void> deleteBand(@PathVariable String bandId) {
+        bandService.deactivate(bandId);
+        return ResponseEntity.noContent().build();
+    }
 }
