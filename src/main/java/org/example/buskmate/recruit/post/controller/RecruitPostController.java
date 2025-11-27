@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.example.buskmate.recruit.post.dto.CreateRecruitPostRequestDto;
 import org.example.buskmate.recruit.post.dto.CreateRecruitPostResponseDto;
 import org.example.buskmate.recruit.post.dto.RecruitPostDetailResponseDto;
+import org.example.buskmate.recruit.post.dto.RecruitPostListDto;
 import org.example.buskmate.recruit.post.service.RecruitPostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +27,11 @@ public class RecruitPostController {
     public ResponseEntity<RecruitPostDetailResponseDto> getDetail(@PathVariable String postId){
         return ResponseEntity.ok(
                 recruitPostService.getDetail(postId));
+    }
+
+    @GetMapping("/list/active")
+    public ResponseEntity<List<RecruitPostListDto>> getActiveList(){
+        return ResponseEntity.ok(
+                recruitPostService.getActiveList());
     }
 }

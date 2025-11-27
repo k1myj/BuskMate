@@ -3,16 +3,19 @@ package org.example.buskmate.recruit.post.service;
 import com.github.f4b6a3.ulid.UlidCreator;
 import lombok.RequiredArgsConstructor;
 import org.example.buskmate.band.domain.Band;
-import org.example.buskmate.band.domain.BandStatus;
 import org.example.buskmate.band.repository.BandRepository;
 import org.example.buskmate.recruit.post.domain.RecruitPost;
+import org.example.buskmate.recruit.post.domain.RecruitPostStatus;
 import org.example.buskmate.recruit.post.dto.CreateRecruitPostRequestDto;
 import org.example.buskmate.recruit.post.dto.CreateRecruitPostResponseDto;
 import org.example.buskmate.recruit.post.dto.RecruitPostDetailResponseDto;
+import org.example.buskmate.recruit.post.dto.RecruitPostListDto;
 import org.example.buskmate.recruit.post.repository.RecruitPostRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -24,7 +27,7 @@ public class RecruitPostServiceImpl implements RecruitPostService {
     @Transactional
     @Override
     public CreateRecruitPostResponseDto create(CreateRecruitPostRequestDto req, String currentUserId){
-        Band band = bandRepository.findByBandIdAndStatus(req.getBandId(), BandStatus.ACTIVE);
+        Band band = bandRepository.findByBandIdAndStatusActive(req.getBandId());
         if(band == null){
             throw new IllegalStateException("밴드를 찾을 수 없습니다");
         }
@@ -57,5 +60,11 @@ public class RecruitPostServiceImpl implements RecruitPostService {
         return recruitPostRepository.findDetail(postId)
                 .orElseThrow(() -> new IllegalArgumentException("모집 글을 찾을 수 없습니다."));
 
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<RecruitPostListDto> getActiveList(){
+        return recruitPostRepository.findAllByStatus(RecruitPostStatus.OPEN);
     }
 }
