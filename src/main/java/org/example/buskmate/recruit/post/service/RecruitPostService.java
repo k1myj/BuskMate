@@ -1,9 +1,6 @@
 package org.example.buskmate.recruit.post.service;
 
-import org.example.buskmate.recruit.post.dto.CreateRecruitPostRequestDto;
-import org.example.buskmate.recruit.post.dto.CreateRecruitPostResponseDto;
-import org.example.buskmate.recruit.post.dto.RecruitPostDetailResponseDto;
-import org.example.buskmate.recruit.post.dto.RecruitPostListDto;
+import org.example.buskmate.recruit.post.dto.*;
 
 import java.util.List;
 
@@ -14,4 +11,5 @@ public interface RecruitPostService {
 
     List<RecruitPostListDto> getActiveList();
 
+    RecruitPostDetailResponseDto update(String postId, UpdateRecruitPostRequestDto req, String currentUserId);
 }
