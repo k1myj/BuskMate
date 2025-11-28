@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.example.buskmate.band.domain.RecruitApplicationStatus;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -13,4 +15,5 @@ public class RecruitApplyResponseDto {
     private String postId;
     private String applicantId;
     private RecruitApplicationStatus status;
+    private LocalDateTime appliedAt;
 }

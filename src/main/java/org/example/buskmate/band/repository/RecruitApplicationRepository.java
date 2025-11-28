@@ -10,7 +10,7 @@ public interface RecruitApplicationRepository extends JpaRepository<RecruitAppli
     RecruitApplication findByApplicationId(String applicationId);
 
     List<RecruitApplication> findAllByRecruitPost_PostId(String postId);
-    List<RecruitApplication> findAllByPost_PostIdAndStatus(String postId, RecruitApplicationStatus status
-    );
+    List<RecruitApplication> findAllByRecruitPost_PostIdAndStatus(String postId, RecruitApplicationStatus status);
 
+    boolean existsRecruitApplicationByRecruitPost_PostIdAndApplicantId(String postId, String applicantId);
 }
