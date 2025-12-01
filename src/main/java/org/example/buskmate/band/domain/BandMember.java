@@ -41,13 +41,33 @@ public class BandMember {
     @Column(name = "joined_at", nullable = false, updatable = false)
     private LocalDateTime joinedAt;
 
-    private BandMember(Band band, String userId, BandMemberRole role) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BandMemberStatus status;
+
+    private BandMember(Band band, String userId, BandMemberRole role, BandMemberStatus status) {
         this.band = band;
         this.userId = userId;
         this.role = role;
+        this.status = status;
     }
 
-    public static BandMember join(Band band, String userId, BandMemberRole role) {
-        return new BandMember(band, userId, role);
+    public static BandMember invited(Band band, String userId, BandMemberRole role) {
+        return new BandMember(band, userId, role, BandMemberStatus.INVITED);
     }
+
+    public void accept() {
+        if (this.status != BandMemberStatus.INVITED) {
+            throw new IllegalStateException("초대 상태가 아닙니다.");
+        }
+        this.status = BandMemberStatus.ACTIVE;
+    }
+
+    public void reject() {
+        if (this.status != BandMemberStatus.INVITED) {
+            throw new IllegalStateException("초대 상태가 아닙니다.");
+        }
+        this.status = BandMemberStatus.REJECTED;
+    }
+
 }
