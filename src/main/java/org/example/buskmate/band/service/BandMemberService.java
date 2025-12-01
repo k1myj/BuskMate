@@ -16,4 +16,6 @@ public interface BandMemberService {
     void rejectInvitation(String bandId, String userId);
 
     void addMemberAccepted(Band band, String userId);
+
+    void kickMember(String bandId, String leaderId, String targetUserId);
 }

@@ -57,4 +57,15 @@ public class BandMemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{bandId}/members/{targetUserId}")
+    public ResponseEntity<Void> kickMember(
+            @PathVariable String bandId,
+            @PathVariable String targetUserId,
+            @AuthenticationPrincipal CustomUser leader
+    ) {
+        bandMemberService.kickMember(bandId, leader.getUserId(), targetUserId);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

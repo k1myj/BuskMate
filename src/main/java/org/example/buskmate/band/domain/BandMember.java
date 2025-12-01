@@ -74,4 +74,12 @@ public class BandMember {
         return new BandMember(band, userId, role, BandMemberStatus.ACTIVE);
     }
 
+    public void kick() {
+        if (this.status != BandMemberStatus.ACTIVE) {
+            throw new IllegalStateException("활동 중인 멤버만 추방할 수 있습니다.");
+        }
+        this.status = BandMemberStatus.KICKED;
+    }
+
+
 }

@@ -102,4 +102,29 @@ public class BandMemberServiceImpl implements BandMemberService {
         bandMemberRepository.save(bandMember);
     }
 
+    @Override
+    @Transactional
+    public void kickMember(String bandId, String leaderId, String targetUserId) {
+
+        Band band = bandRepository.findByBandIdAndStatusActive(bandId);
+        if (band == null) {
+            throw new IllegalArgumentException("해당 밴드가 존재하지 않습니다: " + bandId);
+        }
+
+        if (!band.getLeaderId().equals(leaderId)) {
+            throw new IllegalStateException("밴드 리더만 멤버를 추방할 수 있습니다.");
+        }
+
+        if (band.getLeaderId().equals(targetUserId)) {
+            throw new IllegalStateException("밴드 리더는 추방할 수 없습니다.");
+        }
+
+        BandMember member = bandMemberRepository
+                .findByBand_BandIdAndUserId(bandId, targetUserId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저는 이 밴드의 멤버가 아닙니다."));
+
+        member.kick();
+    }
+
+
 }
