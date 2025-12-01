@@ -6,10 +6,7 @@ import org.example.buskmate.band.dto.recruitapplication.RecruitApplyResponseDto;
 import org.example.buskmate.band.service.RecruitApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +19,11 @@ public class RecruitApplicationController {
         RecruitApplyResponseDto response = recruitApplicationService.apply(postId, user.getUserId());
 
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/apply/{applicationId}")
+    public ResponseEntity<Void> delete(@PathVariable String applicationId, @AuthenticationPrincipal CustomUser user){
+        recruitApplicationService.delete(applicationId, user.getUserId());
+        return ResponseEntity.noContent().build();
     }
 }

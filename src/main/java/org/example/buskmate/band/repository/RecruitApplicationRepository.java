@@ -5,9 +5,10 @@ import org.example.buskmate.band.domain.RecruitApplicationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RecruitApplicationRepository extends JpaRepository<RecruitApplication, Long> {
-    RecruitApplication findByApplicationId(String applicationId);
+    Optional<RecruitApplication> findByApplicationId(String applicationId);
 
     List<RecruitApplication> findAllByRecruitPost_PostId(String postId);
     List<RecruitApplication> findAllByRecruitPost_PostIdAndStatus(String postId, RecruitApplicationStatus status);

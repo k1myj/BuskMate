@@ -6,5 +6,7 @@ public interface RecruitApplicationService {
 
     RecruitApplyResponseDto apply(String postId, String currentUserId);
 
+    void delete(String applicationId, String currentUserId);
+
 
 }
