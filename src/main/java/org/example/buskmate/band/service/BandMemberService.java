@@ -8,6 +8,9 @@ public interface BandMemberService {
 
     List<BandMemberListItemResponse> getMembers(String bandId);
 
-    void inviteMember(String bandId, String userId);
+    void inviteMember(String bandId, String leaderId, String targetUserId);
 
+    void acceptInvitation(String bandId, String userId);
+
+    void rejectInvitation(String bandId, String userId);
 }

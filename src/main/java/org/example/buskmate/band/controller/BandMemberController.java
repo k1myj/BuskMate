@@ -2,6 +2,7 @@ package org.example.buskmate.band.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.buskmate.band.dto.bandmember.BandMemberListItemResponse;
+import org.example.buskmate.band.dto.bandmember.BandMemberRegisterRequest;
 import org.example.buskmate.band.service.BandMemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,11 +28,32 @@ public class BandMemberController {
     @PostMapping("/{bandId}/members/invite")
     public ResponseEntity<Void> inviteMember(
             @PathVariable String bandId,
+            @AuthenticationPrincipal CustomUser leader,
+            @RequestBody BandMemberRegisterRequest request  // 대상 유저
+    ) {
+        bandMemberService.inviteMember(
+                bandId,
+                leader.getUserId(),     // 초대하는 사람 (리더)
+                request.getUserId()     // 초대받는 사람
+        );
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{bandId}/members/invitations/accept")
+    public ResponseEntity<Void> acceptInvitation(
+            @PathVariable String bandId,
             @AuthenticationPrincipal CustomUser user
     ) {
-        String userId = user.getUserId();
+        bandMemberService.acceptInvitation(bandId, user.getUserId());
+        return ResponseEntity.noContent().build();
+    }
 
-        bandMemberService.inviteMember(bandId, userId);
+    @PostMapping("/{bandId}/members/invitations/reject")
+    public ResponseEntity<Void> rejectInvitation(
+            @PathVariable String bandId,
+            @AuthenticationPrincipal CustomUser user
+    ) {
+        bandMemberService.rejectInvitation(bandId, user.getUserId());
         return ResponseEntity.noContent().build();
     }
 
