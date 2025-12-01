@@ -45,19 +45,15 @@ public class BandMember {
     @Column(nullable = false)
     private BandMemberStatus status;
 
-    private BandMember(Band band, String userId, BandMemberRole role) {
+    private BandMember(Band band, String userId, BandMemberRole role, BandMemberStatus status) {
         this.band = band;
         this.userId = userId;
         this.role = role;
+        this.status = status;
     }
 
     public static BandMember invited(Band band, String userId, BandMemberRole role) {
-        BandMember member = new BandMember();
-        member.band = band;
-        member.userId = userId;
-        member.role = role;
-        member.status = BandMemberStatus.INVITED;
-        return member;
+        return new BandMember(band, userId, role, BandMemberStatus.INVITED);
     }
 
     public void accept() {
