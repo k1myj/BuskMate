@@ -1,4 +1,4 @@
-package org.example.buskmate.band.dto;
+package org.example.buskmate.band.dto.bandmember;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
