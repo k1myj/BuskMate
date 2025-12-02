@@ -49,6 +49,14 @@ public class CommunityPostData {
         this.mediaType = mediaType;
         this.sortOrder = sortOrder;
     }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
+    }
 }
 
 
