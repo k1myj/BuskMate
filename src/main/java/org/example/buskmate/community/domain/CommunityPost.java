@@ -36,6 +36,10 @@ public class CommunityPost {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @Builder
     private CommunityPost(
             String title,
