@@ -20,11 +20,12 @@ public class CommunityPostData {
     @JoinColumn(name = "community_post_id", nullable = false)
     private CommunityPost communityPost;
 
+
     @Column(nullable = true)
     private String mediaType;
 
-    @Column(nullable = true)
-    private String url;
+    @Column(nullable = false)
+    private String content;
 
     @Column(nullable = true)
     private Integer sortOrder;
@@ -33,17 +34,25 @@ public class CommunityPostData {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @Builder
     private CommunityPostData(
             CommunityPost communityPost,
             String mediaType,
-            String url,
             Integer sortOrder
     )
     {
         this.communityPost = communityPost;
         this.mediaType = mediaType;
-        this.url = url;
         this.sortOrder = sortOrder;
     }
 }
+
+
+
+
+
+// 노션처럼 블럭단위로 정렬하면 중간에 이미지가 들어가건 맨 위에 뭐가 추가되건 상관이 없다

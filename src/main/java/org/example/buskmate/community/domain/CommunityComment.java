@@ -11,7 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Getter
-@Table(name = "community_comments")
+@Table(name = "community_comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class CommunityComment {
@@ -21,8 +21,11 @@ public class CommunityComment {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_user_id", nullable = false)
-    private CommunityPost authorUser;
+    @JoinColumn(name = "community_post_id", nullable = false)
+    private CommunityPost communityPost;
+
+    @Column(nullable = false)
+    private String authorId;
 
     @Column(nullable = false)
     private String content;
@@ -36,7 +39,7 @@ public class CommunityComment {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "update_at", nullable = false, updatable = false)
+    @Column(name = "update_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Version
@@ -45,16 +48,12 @@ public class CommunityComment {
 
     @Builder
     private CommunityComment(
-            CommunityPost authorUser,
             String content,
-            DeleteStatus isDeleted,
-            Long version
+            DeleteStatus isDeleted
     )
     {
-        this.authorUser = authorUser;
         this.content = content;
         this.isDeleted = isDeleted;
-        this.version = version;
     }
 
     public void uploadComment(String content) {
