@@ -1,5 +1,5 @@
 # 1. Java 17이 들어있는 가벼운 이미지 사용
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine
 
 # 2. 작업 디렉터리
 WORKDIR /app
