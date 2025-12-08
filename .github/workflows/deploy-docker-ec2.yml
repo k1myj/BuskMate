@@ -1,0 +1,86 @@
+name: CI-CD to AWS EC2 (Docker, Role-based)
+
+on:
+  push:
+    branches:
+      - master   # 브랜치 이름 다르면 여기 바꿔
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write   # OIDC로 IAM Role Assume 하려고 필요
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build jar with Gradle
+        run: ./gradlew clean bootJar -x test
+
+      - name: Configure AWS credentials (Assume Role)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::342829152555:role/BuskmateGithubActionRole
+          aws-region: ap-northeast-2
+          role-session-name: buskmate-github-actions
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to ECR
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          echo "Building Docker image..."
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+          echo "Pushing Docker image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push-image
+
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            echo "[deploy] ECR 로그인..."
+            aws ecr get-login-password --region ap-northeast-2 \
+              | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+
+            echo "[deploy] 최신 이미지 pull..."
+            docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+            echo "[deploy] 기존 컨테이너 중지/삭제 시도..."
+            docker stop buskmate-app || true
+            docker rm buskmate-app || true
+
+            echo "[deploy] 새 컨테이너 실행..."
+            docker run -d \
+              --name buskmate-app \
+              -p 8080:8080 \
+              ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+            echo "[deploy] 완료!"
