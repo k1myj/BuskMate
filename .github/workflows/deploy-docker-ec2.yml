@@ -85,27 +85,23 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            cd /home/ec2-user
+
             echo "[deploy] ECR 로그인..."
             aws ecr get-login-password --region ap-northeast-2 \
               | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
 
-            echo "[deploy] 최신 이미지 pull..."
-            docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
+            echo "[deploy] 환경 변수 설정..."
+            export DB_HOST=${{ secrets.RDS_HOST }}
+            export DB_PORT=${{ secrets.RDS_PORT }}
+            export DB_NAME=${{ secrets.RDS_DB }}
+            export DB_USERNAME=${{ secrets.RDS_USERNAME }}
+            export DB_PASSWORD=${{ secrets.RDS_PASSWORD }}
 
-            echo "[deploy] 기존 컨테이너 중지/삭제 시도..."
-            docker stop buskmate-app || true
-            docker rm buskmate-app || true
+            echo "[deploy] 최신 이미지 pull (docker-compose)..."
+            docker-compose pull
 
-            echo "[deploy] 새 컨테이너 실행..."
-            docker run -d \
-              --name buskmate-app \
-              -p 8080:8080 \
-              -e SPRING_PROFILES_ACTIVE=prod \
-              -e DB_HOST=${{ secrets.RDS_HOST }} \
-              -e DB_PORT=${{ secrets.RDS_PORT }} \
-              -e DB_NAME=${{ secrets.RDS_DB }} \
-              -e DB_USERNAME=${{ secrets.RDS_USERNAME }} \
-              -e DB_PASSWORD=${{ secrets.RDS_PASSWORD }} \
-              ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
+            echo "[deploy] 컨테이너 재실행 (docker-compose up -d)..."
+            docker-compose up -d
 
             echo "[deploy] 완료!"
