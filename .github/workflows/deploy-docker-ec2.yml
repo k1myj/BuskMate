@@ -100,6 +100,12 @@ jobs:
             docker run -d \
               --name buskmate-app \
               -p 8080:8080 \
+              -e SPRING_PROFILES_ACTIVE=prod \
+              -e DB_HOST=${{ secrets.RDS_HOST }} \
+              -e DB_PORT=${{ secrets.RDS_PORT }} \
+              -e DB_NAME=${{ secrets.RDS_DB }} \
+              -e DB_USERNAME=${{ secrets.RDS_USERNAME }} \
+              -e DB_PASSWORD=${{ secrets.RDS_PASSWORD }} \
               ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
 
             echo "[deploy] 완료!"
